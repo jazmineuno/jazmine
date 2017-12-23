@@ -7,6 +7,7 @@ This software is based on code from CryptoNote, Bytecoin and Monero, with some m
 To BUILD:
 
 ```
+# apt-get install libboost-all-dev
 # apt-get install build-essential
 # apt-get install cmake
 # apt-get install git
