@@ -21,43 +21,8 @@ To build create 'build' directory and run cmake:
 # cmake ..
 # make
 ```
+(optionally make -j4, -j8 etc depending on # of cores)
 
-At this moment you will need to edit two files, (after the build breaks).
-We will fix the makefiles soon.
-
-```
-[ 76%] Linking CXX executable jazmined
-/usr/bin/ld: cannot find -lupnpc-static
-```
-
-```
-# vi src/CMakeFiles/Daemon.dir/link.txt
-REMOVE -lunpnpc-static
-BEFORE -lboost_system, ADD:
--L../external/miniupnpc -lminiupnpc
-```
-
-then run make again:
-```
-# make 
-```
-
-```
-[ 98%] Linking CXX executable jazminewalletd
-/usr/bin/ld: cannot find -lupnpc-static
-```
-
-```
-# vi src/CMakeFiles/PaymentGateService.dir/link.txt
-REMOVE -lunpnpc-static
-BEFORE -lboost_system, ADD:
--L../external/miniupnpc -lminiupnpc
-```
-
-then run make again:
-```
-# make 
-```
 
 ```
 ...
@@ -66,16 +31,12 @@ then run make again:
 [100%] Built target Miner
 ```
 
-Find the binaries:
+Find the binaries: (in build/src directory)
 ```
 # cd src
 # ./jazmined
 # ./jazminewallet
 ```
 ..etc..
-
-
-
-
 
 

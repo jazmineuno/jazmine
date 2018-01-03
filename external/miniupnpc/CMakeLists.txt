@@ -48,7 +48,7 @@ if (CMAKE_COMPILER_IS_GNUCC)
 
     if (NOT CMAKE_SYSTEM_NAME STREQUAL "AmigaOS")
       set (_PIC -fPIC)
-    endif (CMAKE_SYSTEM_NAME STREQUAL "AmigaOS")
+    endif (NOT CMAKE_SYSTEM_NAME STREQUAL "AmigaOS")
 
     set (CMAKE_C_FLAGS "${_PIC} -Wall $ENV{CFLAGS}" # CMAKE_C_FLAGS gets appended to the other C flags
         CACHE STRING "Flags used by the C compiler during normal builds." FORCE)
@@ -104,60 +104,11 @@ if (WIN32)
 #  set (LDLIBS ${SOCKET_LIBRARY} ${NSL_LIBRARY} ${RESOLV_LIBRARY} ${LDLIBS})
 endif (WIN32)
 
-if (NOT UPNPC_BUILD_STATIC AND NOT UPNPC_BUILD_SHARED)
-    message (FATAL "Both shared and static libraries are disabled!")
-endif (NOT UPNPC_BUILD_STATIC AND NOT UPNPC_BUILD_SHARED)
-
-if (UPNPC_BUILD_STATIC)
-  add_library (libminiupnpc-static STATIC ${MINIUPNPC_SOURCES})
-  set_target_properties (libminiupnpc-static PROPERTIES OUTPUT_NAME "miniupnpc")
-  target_link_libraries (libminiupnpc-static ${LDLIBS})
-  set (UPNPC_INSTALL_TARGETS ${UPNPC_INSTALL_TARGETS} libminiupnpc-static)
-  set (UPNPC_LIBRARY_TARGET libminiupnpc-static)
-  # add_executable (upnpc-static upnpc.c)
-  # target_link_libraries (upnpc-static LINK_PRIVATE libminiupnpc-static)
-endif (UPNPC_BUILD_STATIC)
-
-if (UPNPC_BUILD_SHARED)
-  add_library (libminiupnpc-shared SHARED ${MINIUPNPC_SOURCES})
-  set_target_properties (libminiupnpc-shared PROPERTIES OUTPUT_NAME "miniupnpc")
-  set_target_properties (libminiupnpc-shared PROPERTIES VERSION ${MINIUPNPC_VERSION})
-  set_target_properties (libminiupnpc-shared PROPERTIES SOVERSION ${MINIUPNPC_API_VERSION})
-  target_link_libraries (libminiupnpc-shared ${LDLIBS})
-  set (UPNPC_INSTALL_TARGETS ${UPNPC_INSTALL_TARGETS} libminiupnpc-shared)
-  set (UPNPC_LIBRARY_TARGET libminiupnpc-shared)
-  add_executable (upnpc-shared upnpc.c)
-  target_link_libraries (upnpc-shared LINK_PRIVATE libminiupnpc-shared)
-endif (UPNPC_BUILD_SHARED)
-
-if (UPNPC_BUILD_TESTS)
-  add_executable (testminixml testminixml.c minixml.c igd_desc_parse.c)
-  target_link_libraries (testminixml ${LDLIBS})
-
-  add_executable (minixmlvalid minixmlvalid.c minixml.c)
-  target_link_libraries (minixmlvalid ${LDLIBS})
-
-  add_executable (testupnpreplyparse testupnpreplyparse.c
-                                     minixml.c upnpreplyparse.c)
-  target_link_libraries (testupnpreplyparse ${LDLIBS})
-
-  add_executable (testigddescparse testigddescparse.c
-                                   igd_desc_parse.c minixml.c miniupnpc.c miniwget.c minissdpc.c
-                                   upnpcommands.c upnpreplyparse.c minisoap.c connecthostport.c
-                                   portlistingparse.c receivedata.c
-  )
-  target_link_libraries (testigddescparse ${LDLIBS})
-
-  add_executable (testminiwget testminiwget.c
-                               miniwget.c miniupnpc.c minisoap.c upnpcommands.c minissdpc.c
-                               upnpreplyparse.c minixml.c igd_desc_parse.c connecthostport.c
-                               portlistingparse.c receivedata.c
-  )
-  target_link_libraries (testminiwget ${LDLIBS})
-
-# set (UPNPC_INSTALL_TARGETS ${UPNPC_INSTALL_TARGETS} testminixml minixmlvalid testupnpreplyparse testigddescparse testminiwget)
-endif (UPNPC_BUILD_TESTS)
-
+add_library (libminiupnpc STATIC ${MINIUPNPC_SOURCES})
+set_target_properties (libminiupnpc PROPERTIES OUTPUT_NAME "miniupnpc")
+target_link_libraries (libminiupnpc ${LDLIBS})
+set (UPNPC_INSTALL_TARGETS ${UPNPC_INSTALL_TARGETS} libminiupnpc)
+set (UPNPC_LIBRARY_TARGET libminiupnpc)
 
 install (TARGETS ${UPNPC_INSTALL_TARGETS}
   RUNTIME DESTINATION bin
